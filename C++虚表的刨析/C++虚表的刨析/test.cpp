@@ -380,7 +380,7 @@ using namespace std;
 class Base
 {
 public:
-	Base()
+	/*virtual*/ Base() :b(2)
 	{
 		Function();
 	}
@@ -389,12 +389,25 @@ public:
 	{
 		cout << "Base::Function" << endl;
 	}
+	 void pu()
+	{
+		Function();
+	}
+	 virtual  void vfunc()
+	 {
+		 Function();
+	 }
+	virtual ~Base()
+	{
+		Function();
+	}
+	const int b;
 };
 
 class A : public Base
 {
 public:
-	A() :Base()
+	A() :Base(), a(1)
 	{
 		Function();
 	}
@@ -403,6 +416,19 @@ public:
 	{
 		cout << "A::Function" << endl;
 	}
+	void pu()
+	{
+		Function();
+	}
+	void vfunc()
+	{
+		Function();
+	}
+	virtual ~A()
+	{
+		Function();
+	}
+	const int a;
 };
 class C :public A
 {
@@ -451,13 +477,18 @@ public:
 typedef void(*Pdf)();
 int main()
 {
-	E a;
+	/*E a;
 	int*ptr = *(int**)&a;
 	for (; *ptr != NULL; ptr++)
 	{
 		((Pdf)*ptr)();
 	}
-	system("pause");
+	system("pause");*/
+	A a;
+	Base*pd = &a;
+	pd->Function();
+	pd->pu();
+	pd->~Base();
 	return 0;
 }
 #endif
@@ -471,6 +502,7 @@ int main()
 //{
 //	
 //}
+#if 0
 #include<iostream>
 using namespace std;
 class A
@@ -487,11 +519,11 @@ private:
 class B:virtual public A
 {
 public:
-	//重写基类的虚函数
-	virtual void functest1()
-	{
-		cout << "B::functest1()" << endl;
-	}
+	////重写基类的虚函数
+	//virtual void functest1()
+	//{
+	//	cout << "B::functest1()" << endl;
+	//}
 	////派生类新定义的虚函数
 	virtual void functest2()
 	{
@@ -519,11 +551,11 @@ private:
 class C: public B, public B1
 {
 public:
-	//重写A基类的虚函数
-	virtual void functest1()
+	//重写A基类的虚函数,如果B和B1都重写了虚基类的虚函数，则C类必须也要重写，不重写就会出现重写不明确
+	/*virtual void functest1()
 	{
 		cout << "c::functest1()" << endl;
-	}
+	}*/
 	//重写B基类的虚函数
 	virtual void functest2()
 	{
@@ -560,6 +592,178 @@ int main()
 	C c1;
 	cout << sizeof(c1) << endl;
 	display(c1);
+	B1*pb1 = new C;
+	B*pb = new C;
+	pb1->functest1();
+	pb->functest1();
 	return 0;
 }
+#endif
 
+
+//class A /*final*/
+//{
+//public:
+//	//A()
+//	//{
+//
+//	//}
+//	/*virtual */void fun()  /*final*/  /*override*/
+//	{
+//
+//	}
+//	//~A()
+//	//{
+//
+//	//}
+//};
+//class B : /*virtual*/ public A 
+//{
+//	//A a;
+//};
+//int main()
+//{
+//	B b;
+//	return 0;
+//}
+//
+//#include<iostream>
+//#include<vector>
+//#include<string>
+//#include<assert.h>
+//using namespace std;
+//int findmincout(vector<int>arr)
+//{
+//	auto temp = arr;
+//	for (int i = 1; i < temp.size(); i++)
+//	{
+//		int j = 0;
+//		while (j < 5)
+//		{
+//			if (arr[i]>0)
+//		}
+//	}
+//}
+//int main()
+//{
+//	vector<int> arr(14,0);
+//	int i = 0;
+//	string str;
+//	cin >> str;
+//	for (; i<20; ++i)
+//	{
+//		if (isdigit(str[i]))
+//		{
+//			arr[str[i] - '0'];
+//		}
+//		else
+//		{
+//			switch (str[i])
+//			{
+//			case 'A':
+//				++arr[1];
+//				break;
+//			case 'T':
+//				++arr[10];
+//				break;
+//			case 'J':
+//				++arr[11];
+//				break;
+//			case 'Q':
+//				++arr[12];
+//				break;
+//			case 'K':
+//				++arr[13];
+//				break;
+//			default:
+//				assert(0);
+//				break;
+//			}
+//		}
+//	}
+//	cout << findmincout(arr) << endl;
+//}
+
+//#include<iostream>
+//#include<set>
+//using namespace std;
+//int main()
+//{
+//	set<int>arr;
+//	int n;
+//	cin >> n;
+//	int temp;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> temp;
+//		arr.insert(temp);
+//	}
+//	auto it = arr.begin();
+//	++it;
+//	int sum = 0;
+//	for (; it != arr.end(); ++it)
+//	{
+//		sum += *it;
+//	}
+//	cout << sum << endl;
+//}
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<set>
+using namespace std;
+struct Interval
+{
+	int start;
+	int end;
+};
+bool comp(Interval&left, Interval&right)
+{
+	return left.start <= right.start;
+}
+class Solution {
+public:
+	vector<Interval> merge(vector<Interval>& intervals) {
+		sort(intervals.begin(), intervals.end(), comp);
+		int size = intervals.size();
+		bool flag = false;
+		if (size == 0)
+			return intervals;
+		int i = 0;
+		auto cur = intervals.begin();
+		auto j = cur;
+		for (; cur != intervals.end(); ++cur)
+		{
+			if ((*cur).start > (*j).end)
+			{
+				++j;
+			}
+			else
+			{
+				(*j).start = min((*cur).start, (*j).start);
+				(*j).end = max((*cur).end, (*j).end);
+			}
+		}
+		intervals.erase(j + 1, intervals.end());
+		return intervals;
+	}
+};
+int main()
+{
+	vector<Interval>array;
+	int n = 0;
+	cin >> n;
+
+	array.resize(n);
+	for (int i = 0; i < n; ++i)
+	{
+		cin >> array[i].start;
+		cin >> array[i].end;
+	}
+	auto ret = Solution().merge(array);
+	auto it = ret.begin();
+	for (; it != ret.end(); ++it);
+	//	cout << *it << " ";
+	cout << endl;
+	return 0;
+}

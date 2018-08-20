@@ -33,7 +33,7 @@ public:
 	}
 	~String()
 	{
-		delete _pStr;
+		delete[] _pStr;
 	}
 
 	// 不能使用库函数 

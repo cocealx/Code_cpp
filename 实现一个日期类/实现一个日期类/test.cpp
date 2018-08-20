@@ -1,9 +1,9 @@
 #include"date.h"
 int main()
 {
-	Date d1(1960, 1, 1, 5);
+	Date d1(2013, 1, 1, 2);
 	d1.display(2017,4);
-	d1.displayonemonth(2017, 4);
+	d1.displayonemonth(2018, 8);
 	//Date date1(2017, 12, 31);
 	//Date date2(2017, 2, 28);
 	//Date date21(2000, 2, 28);
